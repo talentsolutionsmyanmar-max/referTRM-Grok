@@ -1,3 +1,52 @@
-// Paste the full layout.tsx code we built earlier here
-// (from one of our first responses – root with dark mode, fonts, providers)
-// If you lost it, tell me "resend layout.tsx" and I'll regenerate the latest version
+// src/app/layout.tsx
+import type { Metadata, Viewport } from 'next'
+import './globals.css'
+import { AuthProvider } from '@/contexts/auth-context'
+import { LangProvider } from '@/contexts/lang-context'
+
+export const metadata: Metadata = {
+  title: {
+    default: 'ReferTRM — Myanmar\'s Professional Hiring Platform',
+    template: '%s · ReferTRM',
+  },
+  description: 'Connect talent with opportunity through trusted referrals. Myanmar\'s first referral-based hiring platform.',
+  keywords: ['jobs myanmar', 'referral hiring', 'myanmar jobs', 'job board yangon'],
+  authors: [{ name: 'ReferTRM' }],
+  manifest: '/manifest.json',
+}
+
+export const viewport: Viewport = {
+  themeColor: '#14B8A6',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  colorScheme: 'dark',
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en" className="dark">
+      <head>
+        {/* DM Sans – professional, modern */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+          rel="stylesheet"
+        />
+        {/* Pyidaungsu for Burmese – pre-installed on most Myanmar devices */}
+      </head>
+      <body className="font-sans bg-[#050D1A] text-slate-100 antialiased">
+        <AuthProvider>
+          <LangProvider>
+            {children}
+          </LangProvider>
+        </AuthProvider>
+      </body>
+    </html>
+  )
+}
