@@ -1,3 +1,4 @@
+// src/app/dashboard/page.tsx
 'use client'
 
 import { useState } from 'react'
@@ -7,7 +8,7 @@ import {
   ChevronRight, PlayCircle 
 } from 'lucide-react'
 
-// Mock user + drops (replace with real data later)
+// Mock user data (replace with real auth later)
 const mockUser = {
   name: 'Ma Thida',
   trinity: 'Pisces-Rabbit-2',
@@ -16,19 +17,20 @@ const mockUser = {
   earnings: 15000,
 }
 
+// Mock Knowledge Drops (personalized by Trinity in real version)
 const mockDrops = [
   {
     id: 1,
     title: "The 3-word email that gets replies",
     duration: "45 sec",
-    trinityTip: "Your Rabbit patience makes soft asks irresistible",
-    type: "audio", // or "video"
+    trinityTip: "Your Rabbit patience makes soft asks irresistible today",
+    type: "audio",
   },
   {
     id: 2,
-    title: "Sunday power tip for Pisces",
+    title: "Sunday intuition boost for Pisces",
     duration: "60 sec",
-    trinityTip: "Intuition peaks today — trust your first feeling",
+    trinityTip: "Gentle flow — trust your first feeling on decisions",
     type: "audio",
   },
   {
@@ -46,7 +48,7 @@ export default function DashboardHome() {
   return (
     <div className="min-h-screen bg-[#050D1A] text-slate-100 font-sans p-6">
       <div className="max-w-4xl mx-auto space-y-8">
-        {/* Greeting + Trinity */}
+        {/* Greeting + Trinity + Streak */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-black">Welcome back, {mockUser.name}</h1>
@@ -61,7 +63,7 @@ export default function DashboardHome() {
           </div>
         </div>
 
-        {/* Daily Forecast (simplified) */}
+        {/* Daily Forecast */}
         <div className="p-6 rounded-2xl bg-gradient-to-br from-teal-900/20 to-slate-900 border border-teal-500/20">
           <h2 className="text-xl font-bold mb-3 flex items-center gap-2">
             <Sparkles size={20} className="text-teal-400" />
@@ -82,27 +84,35 @@ export default function DashboardHome() {
             Knowledge Drops
           </h2>
           <div className="relative overflow-hidden rounded-2xl bg-slate-900/70 border border-slate-800">
-            {/* Simple carousel – can upgrade to swipe later */}
-            <div className="flex transition-transform duration-500" style={{ transform: `translateX(-${activeDrop * 100}%)` }}>
-              {mockDrops.map((drop) => (
+            {/* Simple carousel */}
+            <div 
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${activeDrop * 100}%)` }}
+            >
+              {mockDrops.map(drop => (
                 <div key={drop.id} className="min-w-full p-6">
-                  <div className="aspect-video bg-black rounded-xl flex items-center justify-center mb-4">
+                  <div className="aspect-video bg-black rounded-xl flex items-center justify-center mb-4 relative">
                     <PlayCircle size={64} className="text-teal-400 opacity-70" />
+                    <div className="absolute bottom-4 right-4 bg-black/60 px-3 py-1 rounded-full text-xs text-slate-300">
+                      {drop.duration}
+                    </div>
                   </div>
                   <h3 className="text-lg font-bold mb-2">{drop.title}</h3>
-                  <p className="text-sm text-slate-400 mb-2">{drop.duration}</p>
                   <p className="text-sm italic text-teal-300">{drop.trinityTip}</p>
                 </div>
               ))}
             </div>
-            {/* Dots */}
+
+            {/* Navigation dots */}
             <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
               {mockDrops.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setActiveDrop(i)}
-                  className={`w-2 h-2 rounded-full ${
-                    i === activeDrop ? 'bg-teal-400' : 'bg-slate-600'
+                  className={`w-2.5 h-2.5 rounded-full transition-all ${
+                    i === activeDrop 
+                      ? 'bg-teal-400 scale-125' 
+                      : 'bg-slate-600 hover:bg-slate-400'
                   }`}
                 />
               ))}
@@ -110,7 +120,7 @@ export default function DashboardHome() {
           </div>
         </div>
 
-        {/* Quick Stats & Actions */}
+        {/* Stats Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-800 text-center">
             <DollarSign size={20} className="mx-auto mb-1 text-emerald-400" />
@@ -124,6 +134,7 @@ export default function DashboardHome() {
           </div>
         </div>
 
+        {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Link href="/dashboard/jobs" className="p-5 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-teal-500/50 transition-all flex items-center gap-4">
             <Briefcase size={24} className="text-teal-400" />
@@ -131,7 +142,7 @@ export default function DashboardHome() {
               <div className="font-medium">Browse Jobs</div>
               <div className="text-sm text-slate-500">Find opportunities</div>
             </div>
-            <ChevronRight className="ml-auto" />
+            <ChevronRight className="ml-auto text-slate-400" />
           </Link>
           <Link href="/dashboard/academy" className="p-5 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-teal-500/50 transition-all flex items-center gap-4">
             <BookOpen size={24} className="text-teal-400" />
@@ -139,7 +150,7 @@ export default function DashboardHome() {
               <div className="font-medium">Study Today</div>
               <div className="text-sm text-slate-500">Build skills free</div>
             </div>
-            <ChevronRight className="ml-auto" />
+            <ChevronRight className="ml-auto text-slate-400" />
           </Link>
           <Link href="/dashboard/marketplace" className="p-5 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-teal-500/50 transition-all flex items-center gap-4">
             <Zap size={24} className="text-yellow-400" />
@@ -147,7 +158,7 @@ export default function DashboardHome() {
               <div className="font-medium">Sell Skills</div>
               <div className="text-sm text-slate-500">Earn from learning</div>
             </div>
-            <ChevronRight className="ml-auto" />
+            <ChevronRight className="ml-auto text-slate-400" />
           </Link>
         </div>
       </div>
