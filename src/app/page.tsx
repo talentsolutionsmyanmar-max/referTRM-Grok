@@ -1,142 +1,166 @@
-// src/app/page.tsx
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowRight, Sparkles, Users, Trophy, Zap } from 'lucide-react'
+import { 
+  Sparkles, Flame, Zap, DollarSign, Users, BookOpen, Briefcase, 
+  ChevronRight, PlayCircle 
+} from 'lucide-react'
 
-// ── Magic burst button ───────────────────────────
-function MagicButton({ href, children, big = false }: { href: string; children: React.ReactNode; big?: boolean }) {
-  const [bursts, setBursts] = useState<{ id: number; x: number; y: number }[]>([])
-
-  function handleClick(e: React.MouseEvent) {
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    const id = Date.now()
-    setBursts(b => [...b, { id, x, y }])
-    setTimeout(() => setBursts(b => b.filter(b => b.id !== id)), 1000)
-  }
-
-  return (
-    <Link 
-      href={href} 
-      onClick={handleClick}
-      className={`group relative inline-flex items-center justify-center gap-2 font-black text-white rounded-2xl overflow-hidden transition-all duration-300 ${
-        big ? 'px-12 py-5 text-xl' : 'px-8 py-4 text-base'
-      }`}
-      style={{ 
-        background: 'linear-gradient(135deg, #14B8A6 0%, #06B6D4 100%)',
-        boxShadow: '0 0 40px rgba(20,184,166,0.35), 0 8px 32px rgba(20,184,166,0.2)'
-      }}
-    >
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(255,255,255,0.05) 100%)' }} />
-      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-300" style={{ boxShadow: '0 0 60px rgba(20,184,166,0.6), 0 0 120px rgba(6,182,212,0.3)' }} />
-      {bursts.map(b => (
-        <div key={b.id} className="absolute pointer-events-none" style={{ left: b.x, top: b.y }}>
-          {[...Array(12)].map((_, i) => (
-            <div key={i} className="absolute w-1.5 h-1.5 rounded-full" style={{
-              background: i % 3 === 0 ? '#5EEAD4' : i % 3 === 1 ? '#FDE68A' : '#FFFFFF',
-              animation: `burst-${i} 0.8s ease-out forwards`,
-              transform: `rotate(${i * 30}deg)`,
-            }} />
-          ))}
-        </div>
-      ))}
-      <span className="relative z-10 flex items-center gap-2">
-        {children}
-      </span>
-      <style jsx>{`
-        ${[...Array(12)].map((_, i) => `
-          @keyframes burst-${i} {
-            0%   { transform: rotate(${i * 30}deg) translateX(0) scale(1); opacity: 1; }
-            100% { transform: rotate(${i * 30}deg) translateX(${40 + Math.random() * 30}px) scale(0); opacity: 0; }
-          }
-        `).join('\n')}
-      `}</style>
-    </Link>
-  )
+// Mock user data (replace with real auth later)
+const mockUser = {
+  name: 'Ma Thida',
+  trinity: 'Pisces-Rabbit-2',
+  streak: 7,
+  xp: 245,
+  earnings: 15000,
 }
 
-export default function LandingPage() {
+// Mock Knowledge Drops (personalized by Trinity in real version)
+const mockDrops = [
+  {
+    id: 1,
+    title: "The 3-word email that gets replies",
+    duration: "45 sec",
+    trinityTip: "Your Rabbit patience makes soft asks irresistible today",
+    type: "audio",
+  },
+  {
+    id: 2,
+    title: "Sunday intuition boost for Pisces",
+    duration: "60 sec",
+    trinityTip: "Gentle flow — trust your first feeling on decisions",
+    type: "audio",
+  },
+  {
+    id: 3,
+    title: "Quick objection handler",
+    duration: "50 sec",
+    trinityTip: "Rabbit energy: listen first, then gently redirect",
+    type: "audio",
+  },
+]
+
+export default function DashboardHome() {
+  const [activeDrop, setActiveDrop] = useState(0)
+
   return (
-    <div className="min-h-screen bg-[#050D1A] text-slate-100 font-sans relative overflow-hidden">
-      {/* Particle Background (CSS only) */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/50 to-slate-950" />
-        <div className="absolute inset-0" style={{
-          background: 'radial-gradient(circle at 20% 30%, rgba(20,184,166,0.08) 0%, transparent 50%)',
-          animation: 'float 20s infinite linear'
-        }} />
-      </div>
-
-      {/* Hero Section */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 text-center">
-        <img 
-          src="/images/trm-logo.png" 
-          alt="ReferTRM" 
-          className="h-24 md:h-32 mb-8 animate-pulse" 
-          style={{ filter: 'drop-shadow(0 0 20px rgba(20,184,166,0.6))' }}
-        />
-
-        <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
-          No one hustles alone.
-        </h1>
-
-        <p className="text-xl md:text-3xl text-slate-300 mb-12 max-w-3xl">
-          Earn First, Pay Later, Know Yourself Forever.
-        </p>
-
-        <div className="flex flex-col sm:flex-row gap-6 justify-center">
-          <MagicButton href="/signup" big>
-            Create Free Account <ArrowRight size={24} />
-          </MagicButton>
-          <MagicButton href="/login">
-            Log In <ArrowRight size={20} />
-          </MagicButton>
-        </div>
-
-        <p className="mt-8 text-sm text-slate-500">
-          Free forever • Made with ❤️ in Myanmar • 2026
-        </p>
-      </div>
-
-      {/* Stats Section */}
-      <div className="relative z-10 py-20 px-4 bg-gradient-to-b from-transparent to-slate-950">
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-          <div className="p-8 rounded-2xl bg-slate-900/50 border border-slate-800">
-            <Users size={48} className="mx-auto mb-4 text-teal-400" />
-            <div className="text-4xl font-black mb-2">10,000+</div>
-            <p className="text-slate-400">Myanmar youth connected</p>
+    <div className="min-h-screen bg-[#050D1A] text-slate-100 font-sans p-6">
+      <div className="max-w-4xl mx-auto space-y-8">
+        {/* Greeting + Trinity + Streak */}
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-black">Welcome back, {mockUser.name}</h1>
+            <p className="text-sm text-slate-400 flex items-center gap-2 mt-1">
+              <Sparkles size={16} className="text-teal-400" />
+              Your Trinity: {mockUser.trinity}
+            </p>
           </div>
-          <div className="p-8 rounded-2xl bg-slate-900/50 border border-slate-800">
-            <Trophy size={48} className="mx-auto mb-4 text-yellow-400" />
-            <div className="text-4xl font-black mb-2">500K+</div>
-            <p className="text-slate-400">MMK earned so far</p>
-          </div>
-          <div className="p-8 rounded-2xl bg-slate-900/50 border border-slate-800">
-            <Zap size={48} className="mx-auto mb-4 text-teal-400" />
-            <div className="text-4xl font-black mb-2">Free Forever</div>
-            <p className="text-slate-400">Education & opportunity</p>
+          <div className="flex items-center gap-4 bg-slate-900/50 px-4 py-2 rounded-xl border border-slate-800">
+            <Flame size={20} className="text-orange-400" />
+            <span className="font-bold">{mockUser.streak} day streak</span>
           </div>
         </div>
-      </div>
 
-      {/* CTA Footer */}
-      <div className="relative z-10 py-20 px-4 text-center">
-        <h2 className="text-4xl md:text-5xl font-black mb-8">
-          Your journey starts with one step.
-        </h2>
-        <MagicButton href="/signup" big>
-          Join ReferTRM Now <ArrowRight size={28} />
-        </MagicButton>
-      </div>
+        {/* Daily Forecast */}
+        <div className="p-6 rounded-2xl bg-gradient-to-br from-teal-900/20 to-slate-900 border border-teal-500/20">
+          <h2 className="text-xl font-bold mb-3 flex items-center gap-2">
+            <Sparkles size={20} className="text-teal-400" />
+            Today's Energy
+          </h2>
+          <p className="text-slate-300">
+            Gentle flow – perfect for reflection & small actions. Trust your intuition today.
+          </p>
+          <p className="text-sm text-slate-500 mt-2">
+            Mission: Watch 1 Knowledge Drop + refer 1 friend → +50 XP
+          </p>
+        </div>
 
-      <style jsx global>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-20px); }
-        }
-      `}</style>
+        {/* Knowledge Drops Feed */}
+        <div className="space-y-4">
+          <h2 className="text-xl font-bold flex items-center gap-2">
+            <PlayCircle size={20} className="text-teal-400" />
+            Knowledge Drops
+          </h2>
+          <div className="relative overflow-hidden rounded-2xl bg-slate-900/70 border border-slate-800">
+            {/* Simple carousel */}
+            <div 
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${activeDrop * 100}%)` }}
+            >
+              {mockDrops.map(drop => (
+                <div key={drop.id} className="min-w-full p-6">
+                  <div className="aspect-video bg-black rounded-xl flex items-center justify-center mb-4 relative">
+                    <PlayCircle size={64} className="text-teal-400 opacity-70" />
+                    <div className="absolute bottom-4 right-4 bg-black/60 px-3 py-1 rounded-full text-xs text-slate-300">
+                      {drop.duration}
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-bold mb-2">{drop.title}</h3>
+                  <p className="text-sm italic text-teal-300">{drop.trinityTip}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Navigation dots */}
+            <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+              {mockDrops.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveDrop(i)}
+                  className={`w-2.5 h-2.5 rounded-full transition-all ${
+                    i === activeDrop 
+                      ? 'bg-teal-400 scale-125' 
+                      : 'bg-slate-600 hover:bg-slate-400'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Row */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-800 text-center">
+            <DollarSign size={20} className="mx-auto mb-1 text-emerald-400" />
+            <div className="text-xl font-bold">{mockUser.earnings.toLocaleString()} MMK</div>
+            <div className="text-xs text-slate-500">Earnings</div>
+          </div>
+          <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-800 text-center">
+            <Zap size={20} className="mx-auto mb-1 text-yellow-400" />
+            <div className="text-xl font-bold">{mockUser.xp}</div>
+            <div className="text-xs text-slate-500">XP</div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Link href="/dashboard/jobs" className="p-5 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-teal-500/50 transition-all flex items-center gap-4">
+            <Briefcase size={24} className="text-teal-400" />
+            <div>
+              <div className="font-medium">Browse Jobs</div>
+              <div className="text-sm text-slate-500">Find opportunities</div>
+            </div>
+            <ChevronRight className="ml-auto text-slate-400" />
+          </Link>
+          <Link href="/dashboard/academy" className="p-5 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-teal-500/50 transition-all flex items-center gap-4">
+            <BookOpen size={24} className="text-teal-400" />
+            <div>
+              <div className="font-medium">Study Today</div>
+              <div className="text-sm text-slate-500">Build skills free</div>
+            </div>
+            <ChevronRight className="ml-auto text-slate-400" />
+          </Link>
+          <Link href="/dashboard/marketplace" className="p-5 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-teal-500/50 transition-all flex items-center gap-4">
+            <Zap size={24} className="text-yellow-400" />
+            <div>
+              <div className="font-medium">Sell Skills</div>
+              <div className="text-sm text-slate-500">Earn from learning</div>
+            </div>
+            <ChevronRight className="ml-auto text-slate-400" />
+          </Link>
+        </div>
+      </div>
     </div>
   )
 }
